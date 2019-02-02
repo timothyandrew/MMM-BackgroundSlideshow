@@ -34,9 +34,13 @@ module.exports = NodeHelper.create({
     };
     
     var req = http.request(options, function(res) {
+      var body = "";
       res.setEncoding('utf8');
-      res.on('data', function (data) {
-        var imageList = JSON.parse(data);
+      res.on('data', function(chunk){
+        body += chunk;
+      })
+      res.on('end', function () {
+        var imageList = JSON.parse(body);
         callback(null, data.imageList);
       });
     });
@@ -45,8 +49,6 @@ module.exports = NodeHelper.create({
       console.log('problem with request: ' + e.message);
       callback(e);
     });
-
-    req.end();
   },
 
   // subclass socketNotificationReceived, received notification from module
