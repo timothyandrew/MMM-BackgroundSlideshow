@@ -57,7 +57,7 @@ module.exports = NodeHelper.create({
         body += chunk;
       })
       res.on('end', function () {
-        var imageList = JSON.parse(body);
+        var data = JSON.parse(body);
         callback(null, that.shuffleArray(data.imageList));
       });
     });
