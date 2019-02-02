@@ -23,6 +23,21 @@ module.exports = NodeHelper.create({
   start: function() {
     //this.moduleConfigs = [];
   },
+
+  shuffleArray: function(array) {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  },
+
   // gathers the image list
   gatherImageList: function(config, callback) {
     var options = {
@@ -32,6 +47,8 @@ module.exports = NodeHelper.create({
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     };
+
+    var that = this;
     
     var req = http.request(options, function(res) {
       var body = "";
@@ -41,7 +58,7 @@ module.exports = NodeHelper.create({
       })
       res.on('end', function () {
         var imageList = JSON.parse(body);
-        callback(null, data.imageList);
+        callback(null, that.shuffleArray(data.imageList));
       });
     });
 
@@ -49,6 +66,8 @@ module.exports = NodeHelper.create({
       console.log('problem with request: ' + e.message);
       callback(e);
     });
+
+    req.end();
   },
 
   // subclass socketNotificationReceived, received notification from module
